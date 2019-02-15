@@ -1,4 +1,4 @@
 
-        [console_scripts]
-        plate=plate:cli
+    [console_scripts]
+    plate=plate.plate:cli
     
