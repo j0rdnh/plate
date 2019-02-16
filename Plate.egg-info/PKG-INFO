@@ -1,10 +1,26 @@
-Metadata-Version: 1.0
+Metadata-Version: 2.1
 Name: Plate
-Version: 0.1.0
+Version: 0.1.2
 Summary: CLI tool to create and use templates
-Home-page: UNKNOWN
+Home-page: https://github.com/j0rdnh/plate
 Author: Jordan Hauser
 Author-email: jordan@jhauser.com
 License: MIT
-Description: UNKNOWN
+Description: # Plate
+        
+        a CLI tool for creating and using templates!
+        
+        *This is a WIP :)*
+        
+        ### Usage
+        
+        View/edit the config file with `$ plate config`
+        
+        Create new Plates with `$ plate etch`
+        
+        Use a Plate with `$ plate press`
+        
 Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Description-Content-Type: text/markdown
