@@ -5,6 +5,7 @@ Plate.egg-info/dependency_links.txt
 Plate.egg-info/entry_points.txt
 Plate.egg-info/requires.txt
 Plate.egg-info/top_level.txt
+plate/LICENSE.md
 plate/README.md
 plate/__init__.py
 plate/plate.cfg
