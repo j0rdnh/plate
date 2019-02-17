@@ -28,8 +28,9 @@ setup(
     install_requires=[
         'Click'
     ],
-    entry_points='''
-    [console_scripts]
-    plate=plate.plate:cli
-    '''
+    entry_points={
+        'console_scripts': [
+            'plate=plate.plate:cli'
+        ]
+    }
 )
