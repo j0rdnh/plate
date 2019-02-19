@@ -1,3 +1,4 @@
 /build/
 /dist/
 /Plate.egg-info/
+/__pycache__/

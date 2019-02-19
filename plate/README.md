@@ -1,6 +1,6 @@
 # Plate
 
-a CLI tool for creating and using templates!  
+A CLI tool for creating and using templates!  
 *This is a WIP :)*
 
 ### Usage
@@ -12,7 +12,7 @@ Create new Plates with `$ plate etch`
 Use a Plate with `$ plate press`  
 
 #### **ROADMAP:**
-- [ ] add: `$ plate edit` edit existing Plates
+- [X] add: `$ plate edit` edit existing Plates
 - [ ] add: color interface
 - [ ] update: help pages
 - [ ] add: base Plates
