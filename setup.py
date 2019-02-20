@@ -9,7 +9,7 @@ with open(path.join(this_directory, 'plate/README.md'), encoding='utf-8') as f:
 
 setup(
     name='Plate',
-    version='0.1.2.dev1',
+    version='0.1.2.dev1.1',
     description='CLI tool to create and use templates',
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -19,11 +19,9 @@ class Config(object):
 pass_config = click.make_pass_decorator(Config, ensure=True)
 
 
-@pass_config
 def create_plate(config):
     if click.confirm(
-        "\nWould you like to create a new plate type?\n"
-    ):
+        "\nWould you like to create a new plate type?\n"):
         plate_type = click.prompt(
             "\nWhat would you like to name this plate type?\n")
         mkdir(config.home_dir + plate_type)
@@ -32,7 +30,6 @@ def create_plate(config):
     return plate_type
 
 
-@pass_config
 def no_plate_type(config):
     plate_types = next(walk(config.home_dir))[1]
     if len(plate_types) == 0:
@@ -106,21 +103,17 @@ def etch(config, plate_type, plate_name):
     if plate_type is None:
         if len(plate_types) == 0:
             click.echo("\nYou don't have any plate types.")
-            plate_type = create_plate()
+            plate_type = create_plate(config=config)
         else:
             click.secho("\nHere's a list of your plate types:", bold=True)
             for p in plate_types:
                 click.echo(p)
             if click.confirm(
-                "\nWould you like to use one of these to etch your plate?\n",
-                abort=True
-            ):
+                "\nWould you like to use one of these to etch your plate?\n"):
                 plate_type = click.prompt(
-                    "\nWhich plate type would you like to use?\n",
-                    abort=True
-                )
+                    "\nWhich plate type would you like to use?\n")
             else:
-                plate_type = create_plate()
+                plate_type = create_plate(config=config)
     else:
         if plate_type not in plate_types:
             mkdir(config.home_dir + plate_type)
@@ -130,11 +123,9 @@ def etch(config, plate_type, plate_name):
         plate_dir = config.home_dir
     if plate_name is None:
         plate_name = click.prompt(
-            "\nWhat would you like to name your new Plate?\n",
-            abort=True
-        )
+            "\nWhat would you like to name your new Plate?\n")
     if '.' not in plate_name:
-        plate_ext = click.prompt("Please add an extension", abort=True)
+        plate_ext = click.prompt("Please add an extension")
         if '.' not in plate_ext:
             plate_ext = '.' + plate_ext
         plate_name = plate_name + plate_ext
@@ -157,7 +148,7 @@ def etch(config, plate_type, plate_name):
 @pass_config
 def press(config, plate_type, plate_name, etching_name):
     if plate_type is None:
-        plate_type = no_plate_type()
+        plate_type = no_plate_type(config=config)
     if plate_type != 'none':
         plate_dir = config.home_dir + plate_type + '/'
     else:
@@ -176,9 +167,7 @@ def press(config, plate_type, plate_name, etching_name):
         click.echo(
             "\nSorry, a file by that name already exists in this directory.")
         etching_name = click.prompt(
-            "What would you like to name your new etching?\n",
-            abort=True
-        )
+            "What would you like to name your new etching?\n")
     etching_path = cwd + '/' + etching_name
     plate_to_press = plate_dir + plate_name
     copy(plate_to_press, etching_path)
@@ -205,7 +194,7 @@ def press(config, plate_type, plate_name, etching_name):
 @pass_config
 def edit(config, plate_type, plate_name):
     if plate_type is None:
-        plate_type = no_plate_type()
+        plate_type = no_plate_type(config=config)
     if plate_type != 'none':
         plate_dir = config.home_dir + plate_type + '/'
     else:
