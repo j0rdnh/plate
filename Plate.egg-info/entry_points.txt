@@ -1,3 +1,0 @@
-[console_scripts]
-plate = plate.plate:cli
-
