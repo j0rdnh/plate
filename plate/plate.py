@@ -21,39 +21,39 @@ pass_config = click.make_pass_decorator(Config, ensure=True)
 
 def create_plate(config):
     if click.confirm(
-        "\nWould you like to create a new plate type?\n"):
-        plate_type = click.prompt(
-            "\nWhat would you like to name this plate type?\n")
-        mkdir(config.home_dir + plate_type)
+        "\nWould you like to create a new portfolio?\n"):
+        portfolio = click.prompt(
+            "\nWhat would you like to name this portfolio?\n")
+        mkdir(config.home_dir + portfolio)
     else:
-        plate_type = 'none'
-    return plate_type
+        portfolio = 'none'
+    return portfolio
 
 
-def no_plate_type(config):
-    plate_types = next(walk(config.home_dir))[1]
-    if len(plate_types) == 0:
-        click.echo("\nYou don't have any plate types.\n")
-        plate_type = 'none'
+def no_portfolio(config):
+    portfolios = next(walk(config.home_dir))[1]
+    if len(portfolios) == 0:
+        click.echo("\nYou don't have any portfolios.\n")
+        portfolio = 'none'
     else:
-        click.secho("\nHere's a list of your plate types:", bold=True)
-        for p in plate_types:
+        click.secho("\nHere's a list of your portfolios:", bold=True)
+        for p in portfolios:
             click.echo(p)
-        plate_type = click.prompt(
-            '\nWhich plate type would you like to use?\n')
-        while plate_type not in plate_types:
-            if plate_type == 'none':
+        portfolio = click.prompt(
+            '\nWhich portfolio would you like to use?\n')
+        while portfolio not in portfolios:
+            if portfolio == 'none':
                 break
-            click.echo("\nSorry, that plate type doesn't exist")
-            plate_type = click.prompt(
-                '\nWhich plate type would you like to use?\n')
-    return plate_type
+            click.echo("\nSorry, that portfolio doesn't exist")
+            portfolio = click.prompt(
+                '\nWhich portfolio would you like to use?\n')
+    return portfolio
 
 
-def no_plate_name(plate_dir, plate_type, use):
+def no_plate_name(plate_dir, portfolio, use):
     plates = listdir(plate_dir)
     if len(plates) == 0:
-        click.echo(f"\nSorry, you don't have any {plate_type} plates")
+        click.echo(f"\nSorry, you don't have any {portfolio} plates")
     else:
         click.secho("\nHere's a list of your plates:", bold=True)
         for p in plates:
@@ -82,43 +82,62 @@ def no_etching_name():
 
 @click.group()
 def cli():
+    """Welcome to Plate!
+    
+    The Plate vocabulary utilizes the art of printmaking as metaphor,
+    here are some terms to get you started:
+    "plate" - what we call a template
+    "etch" - how to create a plate
+    "press" - how to use a plate to create a new file
+    "etching" - what we call the new file created by the plate
+    "portfolios" - categories for your plates, defined by you"""
     pass
 
 
 @cli.command(context_settings=CONTEXT_SETTINGS)
-@click.option('--edit', is_flag=True)
+@click.option('--edit', is_flag=True, help='make changes to your settings')
 @pass_config
 def settings(config, edit):
+    """Edit your settings for Plate here!
+    
+    This handles the plate.cfg file which tells Plate a few things:
+    Where your home directory is (the place Plate stores all of your plates)
+    and what your preferred text editor is for when you etch, edit, or press
+    your plates"""
     click.echo('Your Plate directory is %s' % config.home_dir)
     if edit:
         click.edit(editor=config.editor, filename='./.plate/config.ini')
 
 
 @cli.command(context_settings=CONTEXT_SETTINGS)
-@click.option('-type', '--plate-type')
-@click.option('-plate', '--plate-name')
+@click.option(
+    '-type',
+    '--plate-type',
+    help='pick a pre-existing portfolio or create a new one')
+@click.option('-plate', '--plate-name', help='name your plate')
 @pass_config
-def etch(config, plate_type, plate_name):
-    plate_types = next(walk(config.home_dir))[1]
-    if plate_type is None:
-        if len(plate_types) == 0:
-            click.echo("\nYou don't have any plate types.")
-            plate_type = create_plate(config=config)
+def etch(config, portfolio, plate_name):
+    """Etch your plate here!"""
+    portfolios = next(walk(config.home_dir))[1]
+    if portfolio is None:
+        if len(portfolios) == 0:
+            click.echo("\nYou don't have any portfolios.")
+            portfolio = create_plate(config=config)
         else:
-            click.secho("\nHere's a list of your plate types:", bold=True)
-            for p in plate_types:
+            click.secho("\nHere's a list of your portfolios:", bold=True)
+            for p in portfolios:
                 click.echo(p)
             if click.confirm(
                 "\nWould you like to use one of these to etch your plate?\n"):
-                plate_type = click.prompt(
-                    "\nWhich plate type would you like to use?\n")
+                portfolio = click.prompt(
+                    "\nWhich portfolio would you like to use?\n")
             else:
-                plate_type = create_plate(config=config)
+                portfolio = create_plate(config=config)
     else:
-        if plate_type not in plate_types:
-            mkdir(config.home_dir + plate_type)
-    if plate_type != 'none':
-        plate_dir = config.home_dir + plate_type + '/'
+        if portfolio not in portfolios:
+            mkdir(config.home_dir + portfolio)
+    if portfolio != 'none':
+        plate_dir = config.home_dir + portfolio + '/'
     else:
         plate_dir = config.home_dir
     if plate_name is None:
@@ -131,10 +150,10 @@ def etch(config, plate_type, plate_name):
         plate_name = plate_name + plate_ext
     plate_path = plate_dir + plate_name
     open(plate_path, 'w+')
-    plate_type = ' ' + plate_type
+    portfolio = ' ' + portfolio
     plate_name = ' ' + plate_name
     click.secho(
-        f"\nYour{plate_type}{plate_name} plate has been etched!\n",
+        f"\nYour{portfolio}{plate_name} plate has been etched!\n",
         bold=True)
     if click.confirm("Would you like to open it now?\n"):
         click.edit(editor=config.editor, filename=plate_path)
@@ -142,20 +161,24 @@ def etch(config, plate_type, plate_name):
 
 
 @cli.command(context_settings=CONTEXT_SETTINGS)
-@click.option('-type', '--plate-type')
-@click.option('-plate', '--plate-name')
-@click.option('-name', '--etching-name')
+@click.option('-type', '--plate-type', help='specify a portfolio')
+@click.option(
+    '-plate',
+    '--plate-name',
+    help='specify which plate you want to press')
+@click.option('-name', '--etching-name', help='name your new file')
 @pass_config
-def press(config, plate_type, plate_name, etching_name):
-    if plate_type is None:
-        plate_type = no_plate_type(config=config)
-    if plate_type != 'none':
-        plate_dir = config.home_dir + plate_type + '/'
+def press(config, portfolio, plate_name, etching_name):
+    """Press your plate here!"""
+    if portfolio is None:
+        portfolio = no_portfolio(config=config)
+    if portfolio != 'none':
+        plate_dir = config.home_dir + portfolio + '/'
     else:
         plate_dir = config.home_dir
     if plate_name is None:
         plate_name = no_plate_name(plate_dir=plate_dir,
-                                   plate_type=plate_type,
+                                   portfolio=portfolio,
                                    use='press')
     cwd = getcwd()
     if etching_name is None:
@@ -175,13 +198,13 @@ def press(config, plate_type, plate_name, etching_name):
         etching_name = ' ' + plate_name
     else:
         etching_name = ' ' + etching_name
-    if plate_type == 'none':
-        plate_type = ''
+    if portfolio == 'none':
+        portfolio = ''
     else:
-        plate_type = ' ' + plate_type
+        portfolio = ' ' + portfolio
     plate_name = ' ' + plate_name
     click.secho(f"\nYour etching{etching_name} has been pressed" +
-                f" with the{plate_type}{plate_name} plate!\n",
+                f" with the{portfolio}{plate_name} plate!\n",
                 bold=True)
     if click.confirm("Would you like to open your etching now?\n"):
         click.edit(editor=config.editor, filename=etching_path)
@@ -189,19 +212,23 @@ def press(config, plate_type, plate_name, etching_name):
 
 
 @cli.command(context_settings=CONTEXT_SETTINGS)
-@click.option('-type', '--plate-type')
+@click.option(
+    '-type',
+    '--plate-type',
+    help='specify which portfolio the plate you want to edit is')
 @click.option('-plate', '--plate-name')
 @pass_config
-def edit(config, plate_type, plate_name):
-    if plate_type is None:
-        plate_type = no_plate_type(config=config)
-    if plate_type != 'none':
-        plate_dir = config.home_dir + plate_type + '/'
+def edit(config, portfolio, plate_name):
+    """Edit your plates here!"""
+    if portfolio is None:
+        portfolio = no_portfolio(config=config)
+    if portfolio != 'none':
+        plate_dir = config.home_dir + portfolio + '/'
     else:
         plate_dir = config.home_dir
     if plate_name is None:
         plate_name = no_plate_name(plate_dir=plate_dir,
-                                   plate_type=plate_type,
+                                   portfolio=portfolio,
                                    use='edit')
     plate_path = plate_dir + plate_name
     click.echo(f'\nOpening {plate_name} now!\n')
