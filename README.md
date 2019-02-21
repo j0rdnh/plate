@@ -8,10 +8,10 @@ A CLI tool for creating and using templates!
 - View/edit the config file with `$ plate config`
   - home directory
   - editor
-- Create new plates with `$ plate etch`
+- Edit existing plates with `$ plate edit`
   - plate type
   - plate name
-- Edit existing plates with `$ plate edit`
+- Create new plates with `$ plate etch`
   - plate type
   - plate name
 - Use a Plate with `$ plate press`
@@ -21,8 +21,8 @@ A CLI tool for creating and using templates!
     - open etching  
 
 ---
-**ROADMAP:**
+**0.2.x ROADMAP:**
 
-- [ ] add: color interface
 - [ ] update: help pages
+- [ ] add: color interface
 - [ ] add: base Plates
